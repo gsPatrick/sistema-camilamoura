@@ -5,8 +5,8 @@ import { api } from '../../services/api';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-    const [email, setEmail] = useState('patrick@gmail.com');
-    const [password, setPassword] = useState('patrick123');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -27,34 +27,34 @@ export default function LoginPage() {
         <div className={styles.loginContainer}>
             <div className={styles.loginContent}>
                 <div className={styles.header}>
-                    <div className={styles.subtitle}>System Access</div>
+                    <div className={styles.subtitle}>Acesso ao Sistema</div>
                     <h1 className={styles.title}>Advocacia<br />Camila Moura</h1>
                 </div>
 
                 <form onSubmit={handleLogin} className={styles.form}>
                     <div>
-                        <label className={styles.hiddenLabel}>Email</label>
+                        <label className={styles.hiddenLabel}>E-mail</label>
                         <input
                             type="email"
                             className={styles.input}
-                            placeholder="IDENTIFIER / EMAIL"
+                            placeholder="SEU E-MAIL"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                     <div>
-                        <label className={styles.hiddenLabel}>Password</label>
+                        <label className={styles.hiddenLabel}>Senha</label>
                         <input
                             type="password"
                             className={styles.input}
-                            placeholder="PASSPHRASE"
+                            placeholder="SUA SENHA"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
 
                     <button type="submit" className={`btn-primary ${styles.submitBtn}`} disabled={loading}>
-                        {loading ? 'AUTHENTICATING...' : 'ENTER SYSTEM'}
+                        {loading ? 'AUTENTICANDO...' : 'ENTRAR NO SISTEMA'}
                     </button>
                 </form>
             </div>
