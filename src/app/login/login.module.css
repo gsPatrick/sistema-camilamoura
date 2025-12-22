@@ -1,0 +1,99 @@
+.loginContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background: #ffffff;
+    position: relative;
+    /* Grid pattern in background */
+    background-image: linear-gradient(#eee 1px, transparent 1px), linear-gradient(90deg, #eee 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.loginContent {
+    width: 100%;
+    max-width: 400px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 40px;
+    border: 2px solid #000;
+    /* Box Reference */
+    background: #fff;
+    box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+    /* Hard shadow */
+}
+
+.header {
+    text-align: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 20px;
+}
+
+.title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #000;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.hiddenLabel {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.input {
+    width: 100%;
+    background: #fff;
+    border: 2px solid #000;
+    color: #000;
+    padding: 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    border-radius: 0;
+}
+
+.input:focus {
+    outline: none;
+    background: #fafafa;
+}
+
+.submitBtn {
+    margin-top: 10px;
+    width: 100%;
+    background: #000;
+    color: white;
+    border: 2px solid #000;
+    padding: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.submitBtn:hover {
+    background: #fff;
+    color: #000;
+}

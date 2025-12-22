@@ -1,0 +1,513 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: white;
+}
+
+/* Header Minimalista */
+.header {
+    height: 80px;
+    border-bottom: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5vw;
+}
+
+.brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    color: #C59D5F;
+    /* Gold Brand */
+}
+
+.logout {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+/* Tabs Navigation */
+.tabsNav {
+    display: flex;
+    background: #fff;
+    /* Revert to White */
+    padding: 0 5vw;
+    gap: 10px;
+    border-bottom: 2px solid #f0f0f0;
+    /* Subtle light gray line */
+    margin-top: 20px;
+}
+
+.tabBtn {
+    padding: 15px 30px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: #999;
+    background: transparent;
+    border: none;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    /* Overlap active border */
+    /* Stretch tabs */
+    max-width: 250px;
+    text-align: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.tabBtn:hover {
+    color: #C59D5F;
+    background: #fafafa;
+}
+
+.activeTab {
+    background: transparent;
+    color: #C59D5F;
+    /* Gold Text */
+    font-weight: 700;
+    border: none;
+    border-bottom: 3px solid #C59D5F;
+    /* Gold Underline only */
+    box-shadow: none;
+    /* Pop up effect */
+    border-top: 2px solid #fff;
+    /* Shine */
+}
+
+.activeTab::after {
+    content: none;
+}
+
+/* Content Area */
+.contentArea {
+    flex: 1;
+    padding: 40px 10vw 140px 10vw;
+    /* Increased bottom padding to clear footer */
+    max-width: 1600px;
+    /* Wider canvas */
+    margin: 0 auto;
+    width: 100%;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.sectionTitle {
+    font-size: 3.5rem;
+    /* Larger title */
+    margin-bottom: 15px;
+    font-weight: 400;
+    letter-spacing: -1px;
+}
+
+.sectionSubtitle {
+    font-family: 'Inter', sans-serif;
+    color: #555;
+    font-size: 1.1rem;
+    margin-bottom: 50px;
+    /* More breathing room */
+    display: block;
+    max-width: 700px;
+    line-height: 1.6;
+}
+
+/* Editors */
+.textarea {
+    width: 100%;
+    min-height: 400px;
+    padding: 30px;
+    border: 1px solid #ccc;
+    /* Clean 1px border */
+    border-radius: 4px;
+    /* Slight round */
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1rem;
+    line-height: 1.6;
+    resize: vertical;
+    background: #fdfdfd;
+    color: #111;
+    box-shadow: none;
+    /* Removed heavy shadow */
+    transition: all 0.2s ease;
+}
+
+.textarea:focus {
+    outline: none;
+    background: #fff;
+    border-color: #C59D5F;
+    /* Gold Focus */
+    box-shadow: 0 0 0 3px rgba(197, 157, 95, 0.1);
+    /* Soft Gold Glow */
+}
+
+.inputRow {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 1px dashed #ccc;
+    /* Container detail */
+}
+
+.label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    /* Bolder text */
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    color: #000;
+}
+
+.input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    /* Clean 1px border */
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1rem;
+    color: #111;
+    background: #fdfdfd;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #C59D5F;
+    box-shadow: 0 0 0 3px rgba(197, 157, 95, 0.1);
+    background: #fff;
+}
+
+/* Footer Action */
+.actionFooter {
+    position: fixed;
+    bottom: 20px;
+    /* Floating slightly */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    /* Not full width */
+    max-width: 1200px;
+    padding: 15px 30px;
+    background: rgba(255, 255, 255, 0.6);
+    /* Transparent White */
+    backdrop-filter: blur(20px);
+    /* Heavy Blur */
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 100px;
+    /* Pill shape */
+    display: flex;
+    justify-content: space-between;
+    /* Spread content */
+    align-items: center;
+    z-index: 1000;
+}
+
+.statusText {
+    font-family: 'Inter', sans-serif;
+    color: #000;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.publishBtn {
+    background: #C59D5F;
+    /* Gold Background */
+    color: #fff;
+    padding: 15px 40px;
+    border: 2px solid #C59D5F;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.publishBtn:hover {
+    background: #fff;
+    color: #C59D5F;
+    box-shadow: 4px 4px 0px 0px rgba(197, 157, 95, 0.4);
+}
+
+/* Select Styling */
+.select {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    color: #111;
+    background: #fff;
+    appearance: none;
+    /* Remove default arrow */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+    transition: all 0.2s;
+}
+
+.select:focus {
+    outline: none;
+    border-color: #C59D5F;
+    box-shadow: 0 0 0 3px rgba(197, 157, 95, 0.1);
+}
+
+/* Skeleton Loading */
+.skeleton {
+    background-color: #eee;
+    background-image: linear-gradient(90deg,
+            #eee 0px,
+            #f5f5f5 50%,
+            #eee 100%);
+    background-size: 200px 100%;
+    animation: skeleton 1.5s infinite linear;
+    border-radius: 4px;
+}
+
+@keyframes skeleton {
+    0% {
+        background-position: -200px 0;
+    }
+
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+.skeletonInput {
+    height: 50px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Rule Builder Grid */
+.cardsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.specialtyCard {
+    background: #111111;
+    /* Black Card */
+    border: 1px solid #333;
+    border-top: 3px solid #C59D5F;
+    /* Gold Accent Top */
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: relative;
+    transition: transform 0.2s;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    /* Deep shadow */
+}
+
+.specialtyCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    border-color: #C59D5F;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.cardTitle {
+    font-family: 'Playfair Display', serif;
+    /* Serif for title */
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    color: #C59D5F;
+    /* Gold Title */
+}
+
+.removeBtn {
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #666;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: color 0.2s;
+}
+
+.removeBtn:hover {
+    color: #d11;
+}
+
+.cardInputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cardLabel {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #ccc;
+    /* Light Gray Label */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cardInput {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #333;
+    background: #222;
+    /* Dark Input */
+    color: #fff;
+    /* White Text */
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.cardInput:focus {
+    outline: none;
+    border-color: #C59D5F;
+    /* Gold Focus */
+}
+
+.cardTextarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #333;
+    background: #222;
+    color: #fffa;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    min-height: 80px;
+    resize: vertical;
+}
+
+.cardTextarea:focus {
+    outline: none;
+    border-color: #C59D5F;
+}
+
+/* Toggle Switch Dark Mode */
+.toggleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #222;
+}
+
+.urgentLabel {
+    font-weight: 700;
+    color: #fff;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    transition: .4s;
+    border: 2px solid #555;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: #fff;
+    /* White Dot */
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: #fff;
+    /* White Background when active */
+    border-color: #fff;
+}
+
+input:checked+.slider:before {
+    transform: translateX(20px);
+    background-color: #C59D5F;
+    /* Gold Dot when active */
+}
+
+.addBtn {
+    border: 2px dashed #000;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #888;
+}
+
+.addBtn:hover {
+    background: #fafafa;
+    color: #000;
+    border-style: solid;
+}
+
+.addIcon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
