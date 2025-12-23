@@ -55,12 +55,10 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
-    // Simulator state - starts with Carol's greeting
-    const INITIAL_MESSAGE = {
-        role: 'assistant',
-        content: 'Olá! Você entrou em contato com a Advocacia Camila Moura. ⚖️\nSomos especialistas em Direito Previdenciário, com expertise em Trabalhista e Consumidor.\nMeu nome é Carol e estou aqui para direcionar seu atendimento da melhor forma!\nPara começarmos, qual é o seu nome? 😊'
-    };
-    const [simMessages, setSimMessages] = useState([INITIAL_MESSAGE]);
+    // Simulator state - starts empty, Carol greets after first message (like WhatsApp)
+    const INITIAL_GREETING = 'Olá! Você entrou em contato com a Advocacia Camila Moura. ⚖️\nSomos especialistas em Direito Previdenciário, com expertise em Trabalhista e Consumidor.\nMeu nome é Carol e estou aqui para direcionar seu atendimento da melhor forma!\nPara começarmos, qual é o seu nome? 😊';
+    const [simMessages, setSimMessages] = useState([]);
+    const [simIsFirstMessage, setSimIsFirstMessage] = useState(true);
     const [simInput, setSimInput] = useState('');
     const [simLoading, setSimLoading] = useState(false);
     const [simDebug, setSimDebug] = useState(null);
@@ -182,6 +180,16 @@ REGRAS IMPORTANTES:
         setSimMessages(prev => [...prev, { role: 'user', content: msg }]);
         setSimLoading(true);
         setSimDebug(null);
+
+        // Se é a primeira mensagem, mostra saudação inicial (como no WhatsApp real)
+        if (simIsFirstMessage) {
+            setSimIsFirstMessage(false);
+            setTimeout(() => {
+                setSimMessages(prev => [...prev, { role: 'assistant', content: INITIAL_GREETING }]);
+                setSimLoading(false);
+            }, 800);
+            return;
+        }
 
         try {
             const history = simMessages.map(m => ({ role: m.role, content: m.content }));
@@ -398,7 +406,7 @@ REGRAS IMPORTANTES:
                         </div>
 
                         <div className={styles.simActions}>
-                            <button className={styles.resetBtn} onClick={() => { setSimMessages([INITIAL_MESSAGE]); setSimDebug(null); }}>
+                            <button className={styles.resetBtn} onClick={() => { setSimMessages([]); setSimIsFirstMessage(true); setSimDebug(null); }}>
                                 🔄 Limpar Conversa
                             </button>
                             {simDebug && (
