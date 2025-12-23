@@ -42,7 +42,7 @@ export default function Dashboard() {
 
     // Main configs
     const [configs, setConfigs] = useState({
-        AVISO_ETICO: '',
+        AVISO_ETICO: 'Olá! Você entrou em contato com a Advocacia Camila Moura. ⚖️\nSomos especialistas em Direito Previdenciário, com expertise em Trabalhista e Consumidor.\nMeu nome é Carol e estou aqui para direcionar seu atendimento da melhor forma!\nPara começarmos, qual é o seu nome? 😊',
         TRELLO_LIST_ID: '', TRELLO_LABEL_URGENTE_ID: '',
         OPENAI_API_KEY: '',
         ZAPI_INSTANCE_ID: '', ZAPI_TOKEN: '', ZAPI_CLIENT_TOKEN: '',
@@ -55,8 +55,12 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
-    // Simulator state
-    const [simMessages, setSimMessages] = useState([]);
+    // Simulator state - starts with Carol's greeting
+    const INITIAL_MESSAGE = {
+        role: 'assistant',
+        content: 'Olá! Você entrou em contato com a Advocacia Camila Moura. ⚖️\nSomos especialistas em Direito Previdenciário, com expertise em Trabalhista e Consumidor.\nMeu nome é Carol e estou aqui para direcionar seu atendimento da melhor forma!\nPara começarmos, qual é o seu nome? 😊'
+    };
+    const [simMessages, setSimMessages] = useState([INITIAL_MESSAGE]);
     const [simInput, setSimInput] = useState('');
     const [simLoading, setSimLoading] = useState(false);
     const [simDebug, setSimDebug] = useState(null);
@@ -394,7 +398,7 @@ REGRAS IMPORTANTES:
                         </div>
 
                         <div className={styles.simActions}>
-                            <button className={styles.resetBtn} onClick={() => { setSimMessages([]); setSimDebug(null); }}>
+                            <button className={styles.resetBtn} onClick={() => { setSimMessages([INITIAL_MESSAGE]); setSimDebug(null); }}>
                                 🔄 Limpar Conversa
                             </button>
                             {simDebug && (
