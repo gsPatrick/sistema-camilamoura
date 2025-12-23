@@ -46,5 +46,34 @@ export const api = {
     getTrelloData: async () => {
         const response = await apiClient.get('/trello/board-data');
         return response.data;
+    },
+
+    // Knowledge Base (PDF) APIs
+    getKnowledgeDocuments: async () => {
+        const response = await apiClient.get('/knowledge');
+        return response.data;
+    },
+
+    uploadKnowledgePdf: async (file, title, category) => {
+        const formData = new FormData();
+        formData.append('pdf', file);
+        formData.append('title', title || file.name);
+        formData.append('category', category || 'geral');
+
+        const response = await apiClient.post('/knowledge/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return response.data;
+    },
+
+    updateKnowledgeDocument: async (id, data) => {
+        const response = await apiClient.put(`/knowledge/${id}`, data);
+        return response.data;
+    },
+
+    deleteKnowledgeDocument: async (id) => {
+        const response = await apiClient.delete(`/knowledge/${id}`);
+        return response.data;
     }
 };
+

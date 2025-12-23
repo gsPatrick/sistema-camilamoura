@@ -511,3 +511,207 @@ input:checked+.slider:before {
     font-size: 3rem;
     margin-bottom: 10px;
 }
+
+/* Knowledge Base Section */
+.knowledgeSection {
+    max-width: 1000px;
+}
+
+.uploadArea {
+    margin-bottom: 40px;
+}
+
+.uploadBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 50px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #666;
+    background: #fafafa;
+}
+
+.uploadBtn:hover {
+    border-color: #C59D5F;
+    background: #fff;
+    color: #C59D5F;
+}
+
+.uploadBtn small {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.docsList {
+    margin-top: 30px;
+}
+
+.docsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+}
+
+.docCard {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    transition: all 0.2s;
+}
+
+.docCard:hover {
+    border-color: #C59D5F;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.docIcon {
+    font-size: 2rem;
+}
+
+.docInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.docInfo strong {
+    font-size: 0.9rem;
+    color: #111;
+    font-weight: 600;
+}
+
+.docInfo small {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.docActions {
+    display: flex;
+    gap: 5px;
+}
+
+.docActionBtn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    opacity: 0.6;
+    transition: all 0.2s;
+}
+
+.docActionBtn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.toggleSwitch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+}
+
+.toggleSwitch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggleSlider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 22px;
+}
+
+.toggleSlider::before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+.toggleSwitch input:checked+.toggleSlider {
+    background-color: #C59D5F;
+}
+
+.toggleSwitch input:checked+.toggleSlider::before {
+    transform: translateX(18px);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.modalContent {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modalClose {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+}
+
+.modalClose:hover {
+    color: #000;
+}
+
+.docPreview {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f8f8;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.docPreview h4 {
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+}

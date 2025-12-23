@@ -5,6 +5,7 @@ import { api } from '../../services/api';
 
 const TABS = [
     { id: 'brain', label: 'Especialidades', subtitle: 'Adicione ou remova as áreas de atuação. O robô aprende automaticamente estas regras.' },
+    { id: 'knowledge', label: 'Base de Conhecimento', subtitle: 'Suba PDFs e documentos para a IA usar como referência nas respostas.' },
     { id: 'first_contact', label: 'Primeiro Contato', subtitle: 'A mensagem de boas-vindas e aviso ético que todo cliente recebe.' },
     { id: 'urgency', label: 'Urgências', subtitle: 'Texto enviado automaticamente quando o caso é crítico (Doença, Acidente, Liminar).' },
     { id: 'connection', label: 'Conexão', subtitle: 'Configure para onde os leads qualificados devem ir no Trello.' },
@@ -53,6 +54,9 @@ export default function Dashboard() {
         TRELLO_KEY: '', TRELLO_TOKEN: '', TRELLO_BOARD_ID: ''
     });
     const [trelloData, setTrelloData] = useState({ lists: [], labels: [] });
+    const [knowledgeDocs, setKnowledgeDocs] = useState([]);
+    const [selectedDoc, setSelectedDoc] = useState(null);
+    const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
     const [loadingTrello, setLoadingTrello] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -65,6 +69,11 @@ export default function Dashboard() {
                 setLoadingTrello(true);
                 const tData = await api.getTrelloData();
                 setTrelloData(tData);
+                // Load knowledge documents
+                try {
+                    const docs = await api.getKnowledgeDocuments();
+                    setKnowledgeDocs(docs);
+                } catch (e) { console.log('No knowledge docs yet'); }
             } catch (e) { console.error(e); }
             finally {
                 setLoading(false);
@@ -231,6 +240,142 @@ export default function Dashboard() {
                 <span className={styles.sectionSubtitle}>{currentTabInfo.subtitle}</span>
 
                 {activeTab === 'brain' && renderSpecialties()}
+
+                {activeTab === 'knowledge' && (
+                    <div className={styles.knowledgeSection}>
+                        {/* Upload Area */}
+                        <div className={styles.uploadArea}>
+                            <input
+                                type="file"
+                                id="pdf-upload"
+                                accept=".pdf"
+                                multiple
+                                style={{ display: 'none' }}
+                                onChange={async (e) => {
+                                    const files = Array.from(e.target.files);
+                                    if (files.length === 0) return;
+
+                                    setUploading(true);
+                                    try {
+                                        for (const file of files) {
+                                            await api.uploadKnowledgePdf(file, file.name, 'geral');
+                                        }
+                                        const docs = await api.getKnowledgeDocuments();
+                                        setKnowledgeDocs(docs);
+                                        alert(`${files.length} arquivo(s) enviado(s) com sucesso!`);
+                                    } catch (err) {
+                                        alert('Erro ao enviar: ' + err.message);
+                                    } finally {
+                                        setUploading(false);
+                                        e.target.value = '';
+                                    }
+                                }}
+                            />
+                            <label htmlFor="pdf-upload" className={styles.uploadBtn}>
+                                {uploading ? (
+                                    <span>⏳ ENVIANDO...</span>
+                                ) : (
+                                    <>
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                            <polyline points="17 8 12 3 7 8" />
+                                            <line x1="12" y1="3" x2="12" y2="15" />
+                                        </svg>
+                                        <span>CLIQUE PARA ENVIAR PDFs</span>
+                                        <small>ou arraste arquivos aqui</small>
+                                    </>
+                                )}
+                            </label>
+                        </div>
+
+                        {/* Documents List */}
+                        <div className={styles.docsList}>
+                            <h3 style={{ marginBottom: '15px', fontWeight: '300', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px' }}>
+                                📚 Documentos na Base ({knowledgeDocs.length})
+                            </h3>
+
+                            {knowledgeDocs.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: '40px', opacity: 0.5 }}>
+                                    <p>Nenhum documento ainda.</p>
+                                    <p>Suba PDFs para a IA usar como referência!</p>
+                                </div>
+                            ) : (
+                                <div className={styles.docsGrid}>
+                                    {knowledgeDocs.map(doc => (
+                                        <div key={doc.id} className={styles.docCard}>
+                                            <div className={styles.docIcon}>📄</div>
+                                            <div className={styles.docInfo}>
+                                                <strong>{doc.title}</strong>
+                                                <small>{doc.category} • {new Date(doc.createdAt).toLocaleDateString('pt-BR')}</small>
+                                            </div>
+                                            <div className={styles.docActions}>
+                                                <button
+                                                    onClick={() => setSelectedDoc(doc)}
+                                                    title="Ver resumo"
+                                                    className={styles.docActionBtn}
+                                                >
+                                                    👁️
+                                                </button>
+                                                <button
+                                                    onClick={async () => {
+                                                        if (!confirm('Remover este documento?')) return;
+                                                        try {
+                                                            await api.deleteKnowledgeDocument(doc.id);
+                                                            setKnowledgeDocs(prev => prev.filter(d => d.id !== doc.id));
+                                                        } catch (err) {
+                                                            alert('Erro ao remover');
+                                                        }
+                                                    }}
+                                                    title="Remover"
+                                                    className={styles.docActionBtn}
+                                                    style={{ color: '#c00' }}
+                                                >
+                                                    🗑️
+                                                </button>
+                                            </div>
+                                            <label className={styles.toggleSwitch}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={doc.isActive}
+                                                    onChange={async (e) => {
+                                                        try {
+                                                            await api.updateKnowledgeDocument(doc.id, { isActive: e.target.checked });
+                                                            setKnowledgeDocs(prev => prev.map(d =>
+                                                                d.id === doc.id ? { ...d, isActive: e.target.checked } : d
+                                                            ));
+                                                        } catch (err) {
+                                                            alert('Erro ao atualizar');
+                                                        }
+                                                    }}
+                                                />
+                                                <span className={styles.toggleSlider}></span>
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Preview Modal */}
+                        {selectedDoc && (
+                            <div className={styles.modal} onClick={() => setSelectedDoc(null)}>
+                                <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+                                    <button className={styles.modalClose} onClick={() => setSelectedDoc(null)}>×</button>
+                                    <h2>{selectedDoc.title}</h2>
+                                    <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '15px' }}>
+                                        Categoria: {selectedDoc.category} | Arquivo: {selectedDoc.fileName}
+                                    </p>
+                                    <div className={styles.docPreview}>
+                                        <h4>📝 Resumo do Conteúdo:</h4>
+                                        <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', lineHeight: '1.6' }}>
+                                            {selectedDoc.summary || 'Sem resumo disponível'}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 {activeTab === 'first_contact' && (
                     <textarea
