@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api'; // Adjust if running elsewhere
+const API_URL = 'https://geral-api-camila.r954jc.easypanel.host/api';
 
 const apiClient = axios.create({
     baseURL: API_URL,
