@@ -4,6 +4,7 @@ import styles from './dashboard.module.css';
 import { api } from '../../services/api';
 
 const TABS = [
+    { id: 'simulator', label: 'Simulador IA', subtitle: 'Teste a Carol (IA) sem gastar mensagens do WhatsApp ou criar cards no Trello.' },
     { id: 'flow', label: 'Fluxo de Triagem', subtitle: 'Configure como o bot interage: perguntas manuais ou geradas por IA.' },
     { id: 'brain', label: 'Especialidades', subtitle: 'Adicione ou remova as áreas de atuação. O robô aprende automaticamente estas regras.' },
     { id: 'knowledge', label: 'Base de Conhecimento', subtitle: 'Suba PDFs e documentos para a IA usar como referência nas respostas.' },
@@ -74,6 +75,17 @@ export default function Dashboard() {
     });
     const [trelloPreview, setTrelloPreview] = useState({ title: '', description: '' });
     const [newQuestion, setNewQuestion] = useState({ question: '', variableName: '' });
+
+    // Simulator state
+    const [simMessages, setSimMessages] = useState([]);
+    const [simInput, setSimInput] = useState('');
+    const [simLoading, setSimLoading] = useState(false);
+
+    // Knowledge edit modal state
+    const [editingContent, setEditingContent] = useState(null);
+    const [contentText, setContentText] = useState('');
+    const [showTextModal, setShowTextModal] = useState(false);
+    const [newTextDoc, setNewTextDoc] = useState({ title: '', content: '', category: 'geral' });
 
     useEffect(() => {
         async function load() {
@@ -311,6 +323,95 @@ export default function Dashboard() {
             <main className={styles.contentArea}>
                 <h1 className={styles.sectionTitle}>{currentTabInfo.label}</h1>
                 <span className={styles.sectionSubtitle}>{currentTabInfo.subtitle}</span>
+
+                {activeTab === 'simulator' && (
+                    <div className={styles.simulatorSection}>
+                        <div className={styles.chatContainer}>
+                            <div className={styles.chatMessages}>
+                                {simMessages.length === 0 && (
+                                    <div className={styles.chatEmpty}>
+                                        <span>🤖</span>
+                                        <p>Olá! Eu sou a Carol, assistente da Advocacia Camila Moura.</p>
+                                        <p>Envie uma mensagem para testar como eu responderia!</p>
+                                    </div>
+                                )}
+                                {simMessages.map((msg, idx) => (
+                                    <div key={idx} className={`${styles.chatMessage} ${msg.role === 'user' ? styles.userMessage : styles.botMessage}`}>
+                                        <div className={styles.messageContent}>
+                                            {msg.role === 'assistant' && <span className={styles.botLabel}>Carol:</span>}
+                                            <p>{msg.content}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                                {simLoading && (
+                                    <div className={`${styles.chatMessage} ${styles.botMessage}`}>
+                                        <div className={styles.messageContent}>
+                                            <span className={styles.botLabel}>Carol:</span>
+                                            <p className={styles.typing}>Digitando...</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <div className={styles.chatInputArea}>
+                                <input
+                                    type="text"
+                                    className={styles.chatInput}
+                                    placeholder="Digite uma mensagem de teste..."
+                                    value={simInput}
+                                    onChange={(e) => setSimInput(e.target.value)}
+                                    onKeyPress={async (e) => {
+                                        if (e.key === 'Enter' && simInput.trim() && !simLoading) {
+                                            const msg = simInput.trim();
+                                            setSimInput('');
+                                            setSimMessages(prev => [...prev, { role: 'user', content: msg }]);
+                                            setSimLoading(true);
+                                            try {
+                                                const history = simMessages.map(m => ({ role: m.role, content: m.content }));
+                                                const result = await api.simulatorChat(msg, history);
+                                                setSimMessages(prev => [...prev, { role: 'assistant', content: result.response }]);
+                                            } catch (err) {
+                                                setSimMessages(prev => [...prev, { role: 'assistant', content: 'Erro: ' + err.message }]);
+                                            } finally {
+                                                setSimLoading(false);
+                                            }
+                                        }
+                                    }}
+                                />
+                                <button
+                                    className={styles.sendBtn}
+                                    disabled={!simInput.trim() || simLoading}
+                                    onClick={async () => {
+                                        if (simInput.trim() && !simLoading) {
+                                            const msg = simInput.trim();
+                                            setSimInput('');
+                                            setSimMessages(prev => [...prev, { role: 'user', content: msg }]);
+                                            setSimLoading(true);
+                                            try {
+                                                const history = simMessages.map(m => ({ role: m.role, content: m.content }));
+                                                const result = await api.simulatorChat(msg, history);
+                                                setSimMessages(prev => [...prev, { role: 'assistant', content: result.response }]);
+                                            } catch (err) {
+                                                setSimMessages(prev => [...prev, { role: 'assistant', content: 'Erro: ' + err.message }]);
+                                            } finally {
+                                                setSimLoading(false);
+                                            }
+                                        }
+                                    }}
+                                >
+                                    {simLoading ? '⏳' : '📤'}
+                                </button>
+                            </div>
+                        </div>
+                        <div className={styles.simActions}>
+                            <button
+                                className={styles.resetBtn}
+                                onClick={() => setSimMessages([])}
+                            >
+                                🔄 Limpar Conversa
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {activeTab === 'flow' && (
                     <div className={styles.flowSection}>

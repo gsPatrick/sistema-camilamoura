@@ -114,6 +114,33 @@ export const api = {
             sampleData
         });
         return response.data;
+    },
+
+    // Knowledge Content Edit APIs
+    getKnowledgeContent: async (id) => {
+        const response = await apiClient.get(`/knowledge/${id}/content`);
+        return response.data;
+    },
+
+    updateKnowledgeContent: async (id, content) => {
+        const response = await apiClient.put(`/knowledge/${id}/content`, { content });
+        return response.data;
+    },
+
+    createKnowledgeText: async (title, content, category) => {
+        const response = await apiClient.post('/knowledge/text', { title, content, category });
+        return response.data;
+    },
+
+    // Simulator APIs
+    simulatorChat: async (message, history) => {
+        const response = await apiClient.post('/simulator/chat', { message, history });
+        return response.data;
+    },
+
+    getSimulatorInfo: async () => {
+        const response = await apiClient.get('/simulator/info');
+        return response.data;
     }
 };
 

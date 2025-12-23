@@ -1028,3 +1028,156 @@ input:checked+.slider:before {
         max-width: 100% !important;
     }
 }
+
+/* ==================== SIMULATOR STYLES ==================== */
+
+.simulatorSection {
+    max-width: 800px;
+}
+
+.chatContainer {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.chatMessages {
+    height: 450px;
+    overflow-y: auto;
+    padding: 20px;
+    background: linear-gradient(180deg, #f9f9f9 0%, #fff 100%);
+}
+
+.chatEmpty {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    text-align: center;
+}
+
+.chatEmpty span {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.chatEmpty p {
+    margin: 5px 0;
+    font-size: 1rem;
+}
+
+.chatMessage {
+    margin-bottom: 15px;
+    display: flex;
+}
+
+.userMessage {
+    justify-content: flex-end;
+}
+
+.userMessage .messageContent {
+    background: #C59D5F;
+    color: white;
+    border-radius: 18px 18px 4px 18px;
+    padding: 12px 18px;
+    max-width: 75%;
+}
+
+.botMessage .messageContent {
+    background: #f0f0f0;
+    color: #333;
+    border-radius: 18px 18px 18px 4px;
+    padding: 12px 18px;
+    max-width: 75%;
+}
+
+.botLabel {
+    font-weight: 700;
+    color: #C59D5F;
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+}
+
+.messageContent p {
+    margin: 0;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.typing {
+    color: #888;
+    font-style: italic;
+}
+
+.chatInputArea {
+    display: flex;
+    gap: 10px;
+    padding: 15px 20px;
+    background: #f9f9f9;
+    border-top: 1px solid #e0e0e0;
+}
+
+.chatInput {
+    flex: 1;
+    padding: 14px 18px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.chatInput:focus {
+    border-color: #C59D5F;
+    box-shadow: 0 0 0 3px rgba(197, 157, 95, 0.1);
+}
+
+.sendBtn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: #C59D5F;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sendBtn:hover:not(:disabled) {
+    background: #a88549;
+    transform: scale(1.05);
+}
+
+.sendBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.simActions {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+.resetBtn {
+    padding: 12px 24px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.resetBtn:hover {
+    background: #e0e0e0;
+}
