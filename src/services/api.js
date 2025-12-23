@@ -74,6 +74,46 @@ export const api = {
     deleteKnowledgeDocument: async (id) => {
         const response = await apiClient.delete(`/knowledge/${id}`);
         return response.data;
+    },
+
+    // Flow Config APIs
+    getFlowConfig: async () => {
+        const response = await apiClient.get('/flow-config');
+        return response.data;
+    },
+
+    updateFlowConfig: async (config) => {
+        const response = await apiClient.put('/flow-config', config);
+        return response.data;
+    },
+
+    addFlowQuestion: async (question) => {
+        const response = await apiClient.post('/flow-config/questions', question);
+        return response.data;
+    },
+
+    updateFlowQuestion: async (id, data) => {
+        const response = await apiClient.put(`/flow-config/questions/${id}`, data);
+        return response.data;
+    },
+
+    deleteFlowQuestion: async (id) => {
+        const response = await apiClient.delete(`/flow-config/questions/${id}`);
+        return response.data;
+    },
+
+    reorderFlowQuestions: async (questionIds) => {
+        const response = await apiClient.put('/flow-config/questions-order', { questionIds });
+        return response.data;
+    },
+
+    previewTrelloCard: async (titleTemplate, descTemplate, sampleData) => {
+        const response = await apiClient.post('/flow-config/preview', {
+            trelloTitleTemplate: titleTemplate,
+            trelloDescTemplate: descTemplate,
+            sampleData
+        });
+        return response.data;
     }
 };
 

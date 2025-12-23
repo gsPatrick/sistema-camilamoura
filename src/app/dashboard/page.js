@@ -4,6 +4,7 @@ import styles from './dashboard.module.css';
 import { api } from '../../services/api';
 
 const TABS = [
+    { id: 'flow', label: 'Fluxo de Triagem', subtitle: 'Configure como o bot interage: perguntas manuais ou geradas por IA.' },
     { id: 'brain', label: 'Especialidades', subtitle: 'Adicione ou remova as áreas de atuação. O robô aprende automaticamente estas regras.' },
     { id: 'knowledge', label: 'Base de Conhecimento', subtitle: 'Suba PDFs e documentos para a IA usar como referência nas respostas.' },
     { id: 'first_contact', label: 'Primeiro Contato', subtitle: 'A mensagem de boas-vindas e aviso ético que todo cliente recebe.' },
@@ -61,6 +62,19 @@ export default function Dashboard() {
     const [loadingTrello, setLoadingTrello] = useState(false);
     const [saving, setSaving] = useState(false);
 
+    // Flow configuration state
+    const [flowConfig, setFlowConfig] = useState({
+        mode: 'AI_DYNAMIC',
+        aiQuestionCount: 3,
+        aiMaxQuestions: 5,
+        postAction: 'WAIT_CONTACT',
+        trelloTitleTemplate: '{nome}: {telefone}',
+        trelloDescTemplate: '**Área:** {area}\n**Telefone:** {telefone}\n**Resumo:** {resumo}\n\n---\n**Relato:**\n{relato}',
+        questions: []
+    });
+    const [trelloPreview, setTrelloPreview] = useState({ title: '', description: '' });
+    const [newQuestion, setNewQuestion] = useState({ question: '', variableName: '' });
+
     useEffect(() => {
         async function load() {
             try {
@@ -74,6 +88,14 @@ export default function Dashboard() {
                     const docs = await api.getKnowledgeDocuments();
                     setKnowledgeDocs(docs);
                 } catch (e) { console.log('No knowledge docs yet'); }
+                // Load flow config
+                try {
+                    const flow = await api.getFlowConfig();
+                    setFlowConfig(flow);
+                    // Update Trello preview
+                    const preview = await api.previewTrelloCard(flow.trelloTitleTemplate, flow.trelloDescTemplate);
+                    setTrelloPreview(preview.preview);
+                } catch (e) { console.log('No flow config yet'); }
             } catch (e) { console.error(e); }
             finally {
                 setLoading(false);
@@ -86,7 +108,58 @@ export default function Dashboard() {
     const handleChange = (key, value) => setConfigs(prev => ({ ...prev, [key]: value }));
     const handleSave = async () => {
         setSaving(true);
-        try { await api.updateConfigs(configs); } catch (e) { alert('Erro'); } finally { setSaving(false); }
+        try {
+            await api.updateConfigs(configs);
+            // Also save flow config if on flow tab
+            if (activeTab === 'flow') {
+                await api.updateFlowConfig(flowConfig);
+            }
+        } catch (e) { alert('Erro'); } finally { setSaving(false); }
+    };
+
+    const updateFlowField = async (field, value) => {
+        const newConfig = { ...flowConfig, [field]: value };
+        setFlowConfig(newConfig);
+        // Update preview in real-time
+        if (field === 'trelloTitleTemplate' || field === 'trelloDescTemplate') {
+            try {
+                const preview = await api.previewTrelloCard(
+                    field === 'trelloTitleTemplate' ? value : newConfig.trelloTitleTemplate,
+                    field === 'trelloDescTemplate' ? value : newConfig.trelloDescTemplate
+                );
+                setTrelloPreview(preview.preview);
+            } catch (e) { console.error('Preview error:', e); }
+        }
+    };
+
+    const addQuestion = async () => {
+        if (!newQuestion.question || !newQuestion.variableName) {
+            alert('Preencha a pergunta e o nome da variável');
+            return;
+        }
+        try {
+            const created = await api.addFlowQuestion(newQuestion);
+            setFlowConfig(prev => ({
+                ...prev,
+                questions: [...(prev.questions || []), created]
+            }));
+            setNewQuestion({ question: '', variableName: '' });
+        } catch (e) {
+            alert('Erro ao adicionar pergunta');
+        }
+    };
+
+    const removeQuestion = async (id) => {
+        if (!confirm('Remover esta pergunta?')) return;
+        try {
+            await api.deleteFlowQuestion(id);
+            setFlowConfig(prev => ({
+                ...prev,
+                questions: prev.questions.filter(q => q.id !== id)
+            }));
+        } catch (e) {
+            alert('Erro ao remover');
+        }
     };
 
     const currentTabInfo = TABS.find(t => t.id === activeTab);
@@ -238,6 +311,213 @@ export default function Dashboard() {
             <main className={styles.contentArea}>
                 <h1 className={styles.sectionTitle}>{currentTabInfo.label}</h1>
                 <span className={styles.sectionSubtitle}>{currentTabInfo.subtitle}</span>
+
+                {activeTab === 'flow' && (
+                    <div className={styles.flowSection}>
+                        {/* Mode Selector */}
+                        <div className={styles.flowModeSelector}>
+                            <h3>🎛️ Modo de Operação</h3>
+                            <div className={styles.modeOptions}>
+                                <label className={`${styles.modeOption} ${flowConfig.mode === 'MANUAL' ? styles.modeActive : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="mode"
+                                        checked={flowConfig.mode === 'MANUAL'}
+                                        onChange={() => updateFlowField('mode', 'MANUAL')}
+                                    />
+                                    <div className={styles.modeContent}>
+                                        <strong>📝 Manual</strong>
+                                        <span>Você define as perguntas e a ordem</span>
+                                    </div>
+                                </label>
+                                <label className={`${styles.modeOption} ${flowConfig.mode === 'AI_FIXED' ? styles.modeActive : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="mode"
+                                        checked={flowConfig.mode === 'AI_FIXED'}
+                                        onChange={() => updateFlowField('mode', 'AI_FIXED')}
+                                    />
+                                    <div className={styles.modeContent}>
+                                        <strong>🤖 IA (Quantidade Fixa)</strong>
+                                        <span>IA faz X perguntas que você define</span>
+                                    </div>
+                                </label>
+                                <label className={`${styles.modeOption} ${flowConfig.mode === 'AI_DYNAMIC' ? styles.modeActive : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="mode"
+                                        checked={flowConfig.mode === 'AI_DYNAMIC'}
+                                        onChange={() => updateFlowField('mode', 'AI_DYNAMIC')}
+                                    />
+                                    <div className={styles.modeContent}>
+                                        <strong>🧠 IA (Dinâmico)</strong>
+                                        <span>IA decide quantas perguntas são necessárias</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Mode-specific configs */}
+                        {flowConfig.mode === 'MANUAL' && (
+                            <div className={styles.questionsBuilder}>
+                                <h3>📋 Perguntas da Triagem</h3>
+                                <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '20px' }}>
+                                    As perguntas serão feitas na ordem em que aparecem. A IA analisa todas as respostas ao final.
+                                </p>
+
+                                {/* Questions List */}
+                                <div className={styles.questionsList}>
+                                    {(flowConfig.questions || []).map((q, idx) => (
+                                        <div key={q.id} className={styles.questionItem}>
+                                            <span className={styles.questionOrder}>{idx + 1}</span>
+                                            <div className={styles.questionContent}>
+                                                <strong>{q.question}</strong>
+                                                <small>Variável: {'{' + q.variableName + '}'}</small>
+                                            </div>
+                                            <button
+                                                onClick={() => removeQuestion(q.id)}
+                                                className={styles.removeQuestionBtn}
+                                            >🗑️</button>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Add Question Form */}
+                                <div className={styles.addQuestionForm}>
+                                    <input
+                                        type="text"
+                                        placeholder="Nova pergunta (ex: Qual seu nome completo?)"
+                                        value={newQuestion.question}
+                                        onChange={(e) => setNewQuestion(prev => ({ ...prev, question: e.target.value }))}
+                                        className={styles.input}
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Variável (ex: nome)"
+                                        value={newQuestion.variableName}
+                                        onChange={(e) => setNewQuestion(prev => ({ ...prev, variableName: e.target.value.toLowerCase().replace(/\s/g, '_') }))}
+                                        className={styles.input}
+                                        style={{ maxWidth: '200px' }}
+                                    />
+                                    <button onClick={addQuestion} className={styles.addQuestionBtn}>+ Adicionar</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {flowConfig.mode === 'AI_FIXED' && (
+                            <div className={styles.aiConfig}>
+                                <h3>🔢 Quantidade de Perguntas</h3>
+                                <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '20px' }}>
+                                    A IA vai fazer exatamente {flowConfig.aiQuestionCount} pergunta(s) para extrair todas as informações necessárias.
+                                </p>
+                                <div className={styles.sliderContainer}>
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="5"
+                                        value={flowConfig.aiQuestionCount}
+                                        onChange={(e) => updateFlowField('aiQuestionCount', parseInt(e.target.value))}
+                                        className={styles.slider}
+                                    />
+                                    <span className={styles.sliderValue}>{flowConfig.aiQuestionCount} perguntas</span>
+                                </div>
+                            </div>
+                        )}
+
+                        {flowConfig.mode === 'AI_DYNAMIC' && (
+                            <div className={styles.aiConfig}>
+                                <h3>🧠 Limite Máximo</h3>
+                                <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '20px' }}>
+                                    A IA decide quando tem informação suficiente. Máximo de {flowConfig.aiMaxQuestions} perguntas.
+                                </p>
+                                <div className={styles.sliderContainer}>
+                                    <input
+                                        type="range"
+                                        min="3"
+                                        max="7"
+                                        value={flowConfig.aiMaxQuestions}
+                                        onChange={(e) => updateFlowField('aiMaxQuestions', parseInt(e.target.value))}
+                                        className={styles.slider}
+                                    />
+                                    <span className={styles.sliderValue}>Máx: {flowConfig.aiMaxQuestions}</span>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Post-Action Selector */}
+                        <div className={styles.postActionSelector}>
+                            <h3>📤 Após a Triagem</h3>
+                            <div className={styles.postOptions}>
+                                <label className={`${styles.postOption} ${flowConfig.postAction === 'WAIT_CONTACT' ? styles.postActive : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="postAction"
+                                        checked={flowConfig.postAction === 'WAIT_CONTACT'}
+                                        onChange={() => updateFlowField('postAction', 'WAIT_CONTACT')}
+                                    />
+                                    <div>
+                                        <strong>⏳ Aguardar Contato</strong>
+                                        <span>Sistema diz "entraremos em contato" e encerra</span>
+                                    </div>
+                                </label>
+                                <label className={`${styles.postOption} ${flowConfig.postAction === 'AI_RESPONSE' ? styles.postActive : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="postAction"
+                                        checked={flowConfig.postAction === 'AI_RESPONSE'}
+                                        onChange={() => updateFlowField('postAction', 'AI_RESPONSE')}
+                                    />
+                                    <div>
+                                        <strong>💬 IA Responde</strong>
+                                        <span>IA continua conversando e responde dúvidas</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Trello Template Config */}
+                        <div className={styles.trelloConfig}>
+                            <h3>📋 Layout do Card no Trello</h3>
+                            <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '20px' }}>
+                                Use variáveis: {'{nome}'}, {'{telefone}'}, {'{area}'}, {'{resumo}'}, {'{relato}'}, {'{urgencia}'}
+                            </p>
+
+                            <div className={styles.trelloInputs}>
+                                <div className={styles.inputRow}>
+                                    <label className={styles.label}>Título do Card</label>
+                                    <input
+                                        type="text"
+                                        className={styles.input}
+                                        value={flowConfig.trelloTitleTemplate || ''}
+                                        onChange={(e) => updateFlowField('trelloTitleTemplate', e.target.value)}
+                                        placeholder="{nome}: {telefone}"
+                                    />
+                                </div>
+                                <div className={styles.inputRow}>
+                                    <label className={styles.label}>Descrição do Card</label>
+                                    <textarea
+                                        className={styles.textarea}
+                                        style={{ minHeight: '150px' }}
+                                        value={flowConfig.trelloDescTemplate || ''}
+                                        onChange={(e) => updateFlowField('trelloDescTemplate', e.target.value)}
+                                        placeholder="**Área:** {area}..."
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Live Preview */}
+                            <div className={styles.trelloPreview}>
+                                <h4>👁️ Preview do Card</h4>
+                                <div className={styles.trelloCard}>
+                                    <div className={styles.trelloCardTitle}>{trelloPreview.title || 'MARIA SILVA: 5571999887766'}</div>
+                                    <div className={styles.trelloCardDesc}>
+                                        <pre>{trelloPreview.description || '**Área:** Previdenciário\n**Telefone:** 5571999887766\n**Resumo:** Solicitação de aposentadoria'}</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {activeTab === 'brain' && renderSpecialties()}
 
