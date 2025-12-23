@@ -1181,3 +1181,265 @@ input:checked+.slider:before {
 .resetBtn:hover {
     background: #e0e0e0;
 }
+
+/* ==================== TRAINING SECTION ==================== */
+
+.trainingSection {
+    max-width: 900px;
+}
+
+.personalityBox,
+.knowledgeBox,
+.settingsCard {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.personalityBox h3,
+.knowledgeBox h3,
+.settingsCard h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.helpText {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.knowledgeHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.knowledgeActions {
+    display: flex;
+    gap: 10px;
+}
+
+.uploadBtn,
+.textBtn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    border: 1px solid #ddd;
+    background: white;
+}
+
+.uploadBtn:hover,
+.textBtn:hover {
+    background: #f5f5f5;
+    border-color: #C59D5F;
+}
+
+.uploading {
+    color: #C59D5F;
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+.docsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.docCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+.docInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.docInfo strong {
+    font-size: 0.95rem;
+}
+
+.docInfo small {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.docActions {
+    display: flex;
+    gap: 8px;
+}
+
+.docActions button {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s;
+}
+
+.docActions button:hover {
+    opacity: 1;
+}
+
+.emptyDocs {
+    text-align: center;
+    color: #888;
+    padding: 30px;
+}
+
+/* ==================== SETTINGS SECTION ==================== */
+
+.settingsSection {
+    max-width: 700px;
+}
+
+.select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: white;
+}
+
+/* ==================== SIMULATOR EXTRAS ==================== */
+
+.simBanner {
+    background: linear-gradient(135deg, #fff3cd, #ffeeba);
+    border: 1px solid #ffc107;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #856404;
+}
+
+.debugBtn {
+    padding: 12px 24px;
+    background: #e9ecef;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.debugBox {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.debugBox h4 {
+    color: #C59D5F;
+    margin-bottom: 15px;
+}
+
+.debugBox pre {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    margin: 0;
+}
+
+/* ==================== MODALS ==================== */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modalContent h3 {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.modalActions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.cancelBtn {
+    padding: 12px 24px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.confirmBtn {
+    padding: 12px 24px;
+    background: #C59D5F;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.confirmBtn:hover {
+    background: #a88549;
+}
+
+/* ==================== SAVE BUTTON ==================== */
+
+.saveBtn {
+    padding: 16px 40px;
+    background: #C59D5F;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    margin-top: 10px;
+}
+
+.saveBtn:hover:not(:disabled) {
+    background: #a88549;
+}
+
+.saveBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
