@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://geral-api-camila.r954jc.easypanel.host/api';
+const API_URL = 'https://sistema-api.zxnnvy.easypanel.host/api';
 
 const apiClient = axios.create({
     baseURL: API_URL,
